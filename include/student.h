@@ -28,7 +28,7 @@ class Student {
 
 	// csv helpers
 	std::string map_to_string() const;
-	void string_to_map(const std::string& str);
+	std::map<std::string, std::string> string_to_map(const std::string& str);
 	std::string to_csv() const;
 
 	// setters/object creator functions

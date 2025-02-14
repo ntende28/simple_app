@@ -5,7 +5,7 @@
 Student::Student() {}
 
 Student::Student(std::string student_name) : name_(student_name){
-   age_ = 16;
+   age_ = 10;
    subjects_classes = {{"None", "None"}};
 }
 
@@ -44,7 +44,7 @@ std::string Student::map_to_string() const {
    return oss.str();
 }
 
-void Student::string_to_map(const std::string& map_string) {
+std::map<std::string, std::string> Student::string_to_map(const std::string& map_string) {
    // std::string content = str.substr(1, str.size() - 2);  // Remove '{' and '}'
    subjects_classes.clear();
 
@@ -73,7 +73,8 @@ void Student::string_to_map(const std::string& map_string) {
       valueStream >> v;
 
       subjects_classes[k] = v;
-   }   
+   }  
+   return subjects_classes; 
 }
 
 

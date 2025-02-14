@@ -32,7 +32,7 @@ class Datastore {
         // CRUD operations: create, read, update, delete
         void add_students(const std::string &filename, const std::vector<Student> &students);
         Student find_student(std::string student_name);
-        std::vector<Student> find_all();
+        std::vector<Student> find_all(const std::string& filename);
         void update_student(Student& obj);
         void delete_student(Student& obj);
 };

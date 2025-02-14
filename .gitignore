@@ -4,6 +4,9 @@
 *.app
 prog
 
+# build files
+build/
+
 # Compiled Object files
 *.slo
 *.lo

@@ -48,7 +48,9 @@ std::vector<Student> Datastore::find_all(const std::string& filename) {
         getline(ss, subject_class_str, ',');
 
         int age = std::stoi(ageStr);
-        std::map<string, string> subjects_classes = std::stod(subject_class_str);
+        Student my_student(name);
+        my_student.set_age(age);
+        std::map<std::string, std::string> subjects_classes = my_student.string_to_map(subject_class_str);
 
         students.emplace_back(name, age, subjects_classes);
     }
@@ -57,9 +59,6 @@ std::vector<Student> Datastore::find_all(const std::string& filename) {
     return students;
 }
 
-void Datastore::string_to_map(const std::string& str) {
-
-}
 
 void Datastore::update_student(Student& obj) {
 
