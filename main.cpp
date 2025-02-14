@@ -16,6 +16,48 @@ int main() {
 							{"Fine Art", "Art room"},
 							{"Computer Programming 101", "Computer lab"}
 						};
+	
+	/*Creating the main program loop; It is meant to accomplish these things
+		- check if user has not quit program
+		- present a menu of options from which the user can select
+		- based on selection, allow user to carry out any of the CRUD operations
+		- Allow to edit particular attribute of existing obj data
+		- save to a proxy datastore here this is a .csv file
+		- return a table format for students in proxy storage
+	*/
+	int choice 0;
+
+	while(std::cin.get() != 'q') {
+		switch (choice)
+		{
+		case 0:
+			/* Display the menu of options */
+			break;
+		
+		case 1:
+			/* Add new student */
+			break;
+
+		case 2:
+			/* Return all existing students in the datastore in a table format  */
+			break;
+
+		case 3:
+			/* Update info/attributes for an existing student */
+			break;
+
+		case 4:
+			/* Delete a student from the datastore */
+			break;
+
+		case 5:
+			/* Quit program */
+			break;
+		
+		default:
+			break;
+		}
+	}
 
 	Student newbie;
 	newbie.set_name("Kenneth");
