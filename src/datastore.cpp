@@ -21,7 +21,8 @@ void Datastore::add_students(const std::string &filename, const std::vector<Stud
 
     file.close();
 }
-std::vector<Student> readFromCSV(const std::string& filename) {
+
+std::vector<Student> Datastore::find_all(const std::string& filename) {
     std::vector<Student> students;
     std::ifstream file(filename);
 
@@ -40,24 +41,24 @@ std::vector<Student> readFromCSV(const std::string& filename) {
         }
 
         std::stringstream ss(line);
-        std::string name, ageStr, gradeStr;
+        std::string name, ageStr, subject_class_str;
 
         getline(ss, name, ',');
         getline(ss, ageStr, ',');
-        getline(ss, gradeStr, ',');
+        getline(ss, subject_class_str, ',');
 
         int age = std::stoi(ageStr);
-        double grade = std::stod(gradeStr);
+        std::map<string, string> subjects_classes = std::stod(subject_class_str);
 
-        students.emplace_back(name, age, grade);
+        students.emplace_back(name, age, subjects_classes);
     }
 
     file.close();
     return students;
 }
 
-std::vector<Student> Datastore::find_all() {
-    return this->students;
+void Datastore::string_to_map(const std::string& str) {
+
 }
 
 void Datastore::update_student(Student& obj) {

@@ -37,11 +37,43 @@ std::string Student::map_to_string() const {
    std::map<std::string, std::string> rms = this->subjects_classes;
    std::ostringstream oss;
    for (auto it = rms.begin(); it != rms.end(); ++it) {
-      oss << it->first << " -- " << it->second;
+      oss << it->first << " : " << it->second;
       if (std::next(it) != rms.end())
          oss << ", ";
    }
    return oss.str();
+}
+
+void Student::string_to_map(const std::string& map_string) {
+   // std::string content = str.substr(1, str.size() - 2);  // Remove '{' and '}'
+   subjects_classes.clear();
+
+   std::stringstream ss(map_string);
+   std::string pair;
+
+   while (getline(ss, pair, ',')) {
+      std::stringstream pairStream(pair);
+      std::string key, value;
+
+      getline(pairStream, key, ':');
+      getline(pairStream, value, ':');
+
+      // Trim whitespace
+      key.erase(0, key.find_first_not_of(" \t\n\r"));
+      key.erase(key.find_last_not_of(" \t\n\r") + 1);
+      value.erase(0, value.find_first_not_of(" \t\n\r"));
+      value.erase(value.find_last_not_of(" \t\n\r") + 1);
+
+      std::istringstream keyStream(key);
+      std::istringstream valueStream(value);
+      
+      std::string k;
+      std::string v;
+      keyStream >> k;
+      valueStream >> v;
+
+      subjects_classes[k] = v;
+   }   
 }
 
 

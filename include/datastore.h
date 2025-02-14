@@ -27,8 +27,8 @@ class Datastore {
                 instance = new Datastore();
             }
             return instance;
-        }
-        
+        }     
+
         // CRUD operations: create, read, update, delete
         void add_students(const std::string &filename, const std::vector<Student> &students);
         Student find_student(std::string student_name);
