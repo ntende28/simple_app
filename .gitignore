@@ -2,6 +2,7 @@
 *.exe
 *.out
 *.app
+prog
 
 # Compiled Object files
 *.slo

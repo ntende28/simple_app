@@ -1,6 +1,16 @@
 // main.cpp
 
-#include "src/student.h"
+#include "include/student.h"
+
+
+void print_menu(){
+	std::cout << "Press 0 to display available options \n";
+	std::cout << "Press 1 to add a new student \n";
+	std::cout << "Press 2 to return all existing students \n";
+	std::cout << "Press 3 to update the details of a student \n";
+	std::cout << "Press 4 to delete a student \n";
+	std::cout << "Press 'q' to quit the program \n";
+}
 
 int main() {
 
@@ -25,13 +35,14 @@ int main() {
 		- save to a proxy datastore here this is a .csv file
 		- return a table format for students in proxy storage
 	*/
-	int choice 0;
+	int choice = 0;
 
 	while(std::cin.get() != 'q') {
 		switch (choice)
 		{
 		case 0:
 			/* Display the menu of options */
+			print_menu();
 			break;
 		
 		case 1:

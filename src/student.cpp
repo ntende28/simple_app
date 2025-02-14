@@ -28,20 +28,22 @@ std::string Student::get_name() {
    return this->name_;
 }
 
-void Student::print_student() {
-   std::cout << "Name : " << get_name() << std::endl;
-   std::cout << "Age : " << get_age() << std::endl;
-   std::cout << "Designated subjects & study areas : \n";
-   get_subjects_classes();
+std::string Student::to_csv() const {
+   return name_ + "," + std::to_string(age_) + "," + map_to_string();
 }
 
 
-void Student::get_subjects_classes() {
-   std::map<std::string, std::string> obj_subjects = this->subjects_classes;
+std::string Student::map_to_string() const {
+   std::map<std::string, std::string> rms = this->subjects_classes;
+   std::ostringstream oss;
+   for (auto it = rms.begin(); it != rms.end(); ++it) {
+      oss << it->first << " -- " << it->second;
+      if (std::next(it) != rms.end())
+         oss << ", ";
+   }
+   return oss.str();
+}
 
-   for (auto i: obj_subjects)
-      std::cout << i.first << " - " << i.second << std::endl;
-}  
 
 // setter functions
 void Student::set_name(std::string student_name) {

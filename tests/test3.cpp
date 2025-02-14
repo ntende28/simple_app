@@ -1,9 +1,23 @@
-#include "../include/datastore.h"
+#include <iostream>
+#include <fstream>
+#include <vector>
+#include <sstream>
 
-/*Implementing a proxy storage system to create a persistent storage with a csv
-file. This is to contain the input obtained from the user in the commandline.*/
+class Student {
+public:
+    std::string name;
+    int age;
+    double grade;
 
-void Datastore::add_students(const std::string &filename, const std::vector<Student> &students) {
+    Student(std::string n, int a, double g) : name(n), age(a), grade(g) {}
+
+    // Convert object data to CSV format
+    std::string toCSV() const {
+        return name + "," + std::to_string(age) + "," + std::to_string(grade);
+    }
+};
+
+void writeToCSV(const std::string& filename, const std::vector<Student>& students) {
     std::ofstream file(filename);
     
     if (!file.is_open()) {
@@ -12,15 +26,16 @@ void Datastore::add_students(const std::string &filename, const std::vector<Stud
     }
 
     // Write header
-    file << "Name,Age,Subjects and Rooms\n";
+    file << "Name,Age,Grade\n";
 
     // Write each student as a CSV row
     for (const auto& student : students) {
-        file << student.to_csv() << "\n";
+        file << student.toCSV() << "\n";
     }
 
     file.close();
 }
+
 std::vector<Student> readFromCSV(const std::string& filename) {
     std::vector<Student> students;
     std::ifstream file(filename);
@@ -56,19 +71,21 @@ std::vector<Student> readFromCSV(const std::string& filename) {
     return students;
 }
 
-std::vector<Student> Datastore::find_all() {
-    return this->students;
+int main() {
+    std::vector<Student> students = {
+        {"Alice", 20, 85.5},
+        {"Bob", 22, 78.3},
+        {"Charlie", 19, 92.7}
+    };
+
+    writeToCSV("students.csv", students);
+    std::cout << "CSV file written successfully.\n";
+
+    auto current_students = readFromCSV("students.csv");
+    // adding the headers
+    std::cout << "Name \t| Age \t| Grade "<< std::endl;
+    for(auto i: current_students)
+        std::cout << i.name << " \t| " << i.age << " \t| " << i.grade << "\n";
+
+    return 0;
 }
-
-void Datastore::update_student(Student& obj) {
-
-}
-
-void Datastore::delete_student(Student& obj) {
-
-}
-
-Student Datastore::find_student(std::string student_name) {
-
-}
-
