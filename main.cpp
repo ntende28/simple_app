@@ -4,6 +4,7 @@
 
 
 void print_menu(){
+	std::cout << "Enter a number (0 - 4) for your operation : ";
 	std::cout << "Press 0 to display available options \n";
 	std::cout << "Press 1 to add a new student \n";
 	std::cout << "Press 2 to return all existing students \n";
@@ -36,8 +37,8 @@ int main() {
 		- return a table format for students in proxy storage
 	*/
 	int choice = 0;
-
-	while(std::cin.get() != 'q') {
+	
+	while(std::cin.get() != 'q') {	
 		switch (choice)
 		{
 		case 0:
@@ -66,6 +67,7 @@ int main() {
 			break;
 		
 		default:
+			// print_menu();
 			break;
 		}
 	}

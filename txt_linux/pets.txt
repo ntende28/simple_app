@@ -1,7 +1,0 @@
-goldfish
-dog
-cat
-parrot
-dog
-goldfish
-goldfish

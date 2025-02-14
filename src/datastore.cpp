@@ -52,7 +52,7 @@ std::vector<Student> Datastore::find_all(const std::string& filename) {
         my_student.set_age(age);
         std::map<std::string, std::string> subjects_classes = my_student.string_to_map(subject_class_str);
 
-        students.emplace_back(name, age, subjects_classes);
+        students.emplace_back(age, name, subjects_classes);
     }
 
     file.close();
@@ -60,15 +60,15 @@ std::vector<Student> Datastore::find_all(const std::string& filename) {
 }
 
 
-void Datastore::update_student(Student& obj) {
+// void Datastore::update_student(Student& obj) {
 
-}
+// }
 
-void Datastore::delete_student(Student& obj) {
+// void Datastore::delete_student(Student& obj) {
 
-}
+// }
 
-Student Datastore::find_student(std::string student_name) {
+// Student Datastore::find_student(std::string student_name) {
 
-}
+// }
 
