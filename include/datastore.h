@@ -5,30 +5,23 @@ with a csv file. This is to contain the input obtained from the user in the comm
 #include "student.h"
 #include <fstream>
 #include <vector>
+// #include <memory>
 
 class Datastore {
     private:
-        std::vector<Student> students;
-        Datastore() {
-            std::cout << "New datastore created\n";
-        }
+        Datastore() {}
 
         // Delete copy constructor and assignment operator to prevent copying
         Datastore(const Datastore&) = delete;
-        Datastore& operator=(const Datastore&) = delete;
-
-        // Static pointer to hold the single instance
-        static Datastore* instance;
+        // Datastore& operator=(const Datastore&) = delete;
 
     public:
         // Static method to provide access to the instance
-        static Datastore* getInstance() {
-            if (instance == nullptr) {
-                instance = new Datastore();
-            }
+        static Datastore& getInstance() {
+            static Datastore instance;
             return instance;
-        }     
-
+        }
+      
         // CRUD operations: create, read, update, delete
         void add_students(const std::string &filename, const std::vector<Student> &students);
         // Student find_student(std::string student_name);
@@ -37,5 +30,3 @@ class Datastore {
         // void delete_student(Student& obj);
 };
 
-// Initialize the static instance pointer to nullptr
-Datastore* Datastore::instance = nullptr;

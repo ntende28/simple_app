@@ -1,33 +1,70 @@
 // main.cpp
 
 #include "include/student.h"
+#include "include/datastore.h"
+#include <limits>
 
+static std::vector<Student> my_students;
+
+Datastore& ds = Datastore::getInstance();
 
 void print_menu(){
-	std::cout << "Enter a number (0 - 4) for your operation : ";
-	std::cout << "Press 0 to display available options \n";
-	std::cout << "Press 1 to add a new student \n";
-	std::cout << "Press 2 to return all existing students \n";
-	std::cout << "Press 3 to update the details of a student \n";
-	std::cout << "Press 4 to delete a student \n";
-	std::cout << "Press 'q' to quit the program \n";
+	std::cout << "0. Display available options \n";
+	std::cout << "1. Add a new student \n";
+	std::cout << "2. View all existing students \n";
+	std::cout << "3. Update the details of a student \n";
+	std::cout << "4. Delete a student \n";
+	std::cout << "5. Quit the program \n";
+	std::cout << "Enter your choice: ";
+}
+
+Student _add_students() {
+	int student_age;
+	std::string student_name;
+	std::string subjects_rooms;
+		
+	std::cout << "Enter the student name : ";
+	std::cin >> student_name;
+	std::cout << "Enter the student's age : ";
+	std::cin >> student_age;
+	std::cout << "Enter choice of subjects and their rooms (e.g. physics : physics lab, art : artroom) : \n";
+	std::cin >> subjects_rooms;
+
+	Student my_student(student_name);
+	my_student.set_age(student_age);
+	std::map<std::string, std::string> rooms = my_student.string_to_map(subjects_rooms);
+	my_student.add_students_classes(rooms);
+	return my_student;
+}
+
+
+void add_new_students() {
+    char flag = 'y';
+
+    while (flag == 'y' || flag == 'Y') {
+		Student student = _add_students();
+		my_students.push_back(student);
+		ds.add_students("datastore.csv", my_students);
+
+        std::cout << "Do you want to enter another student (y/n)? ";
+        std::cin >> flag;
+        std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n'); // Flush buffer
+    }
+
+    std::cout << "Returning to main menu...\n";
+}
+
+void display_students(std::vector<Student>& students) {
+	
+	std::cout << "Name \t| Age \t| Subjects & Classes \t|\n";
+	for (auto &it : students) {
+		std::cout << it.get_name() << " \t|" << it.get_age() << " \t|" << it.map_to_string() << " \t|\n";
+	}
+	std::cout << "\n";
 }
 
 int main() {
 
-	std::map<std::string, std::string> science_subject_rooms = {
-							{"Physics", "Physics Lab"}, 
-							{"Electronics", "Electronics lab"},
-							{"Computer Programming 101", "Computer Lab"},
-							{"Literature", "Literature Room"}
-						};
-
-	std::map<std::string, std::string> arts_rooms = {
-							{"History", "History room"},
-							{"Fine Art", "Art room"},
-							{"Computer Programming 101", "Computer lab"}
-						};
-	
 	/*Creating the main program loop; It is meant to accomplish these things
 		- check if user has not quit program
 		- present a menu of options from which the user can select
@@ -37,62 +74,51 @@ int main() {
 		- return a table format for students in proxy storage
 	*/
 	int choice = 0;
+	bool is_active = true;
+	std::vector<Student> current_students =  ds.find_all("datastore.csv");
+	print_menu();
 	
-	while(std::cin.get() != 'q') {	
+	while(is_active) {	
+		std::cin >> choice;
+
 		switch (choice)
 		{
 		case 0:
 			/* Display the menu of options */
-			print_menu();
 			break;
 		
 		case 1:
-			/* Add new student */
+			std::cout << "Adding new students...\n";
+			add_new_students();
 			break;
 
 		case 2:
 			/* Return all existing students in the datastore in a table format  */
+			std::cout << "Displaying all existing students...\n";
+			display_students(current_students);
 			break;
 
 		case 3:
 			/* Update info/attributes for an existing student */
+			std::cout << "Updating student information...\n";
 			break;
 
 		case 4:
 			/* Delete a student from the datastore */
+			std::cout << "Deleting a student...\n";
 			break;
 
 		case 5:
 			/* Quit program */
-			break;
+			std::cout << "Exiting program...\n";
+			return 0;
 		
 		default:
-			// print_menu();
+			std::cout << "Invalid choice. Try again.\n";
 			break;
 		}
+		print_menu();  // Display the menu again only after processing a choice
 	}
 
-	// Student newbie;
-	// newbie.set_name("Kenneth");
-	// newbie.set_age(28);
-	// newbie.add_students_classes(science_subject_rooms);
-	// newbie.update_class_subject("Electronics", "Industrial electronics Lab");
-
-
-	// Student robert(22, "Robert", arts_rooms);
-	// robert.remove_class_subject("Computer Programming 101");
-
-	// std::cout << "Initial Students \n";
-	// newbie.print_student();
-	// std::cout << " \n";
-	// robert.print_student();
-
-	// std::cout << "****************************** \n";
-	// newbie.add_new_class_subject({"Power systems", "Power systems Lab"});
-	// robert.add_new_class_subject({"Geography", "Geography room"});
-	// std::cout << "After adding new subjects \n";
-	// newbie.print_student();
-	// std::cout << " \n";
-	// robert.print_student();
 	return 0;
 }

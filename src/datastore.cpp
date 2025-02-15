@@ -3,6 +3,8 @@
 /*Implementing a proxy storage system to create a persistent storage with a csv
 file. This is to contain the input obtained from the user in the commandline.*/
 
+
+// adding students to csv file
 void Datastore::add_students(const std::string &filename, const std::vector<Student> &students) {
     std::ofstream file(filename);
     
@@ -22,6 +24,7 @@ void Datastore::add_students(const std::string &filename, const std::vector<Stud
     file.close();
 }
 
+// returning all students in the csv file
 std::vector<Student> Datastore::find_all(const std::string& filename) {
     std::vector<Student> students;
     std::ifstream file(filename);
@@ -45,7 +48,7 @@ std::vector<Student> Datastore::find_all(const std::string& filename) {
 
         getline(ss, name, ',');
         getline(ss, ageStr, ',');
-        getline(ss, subject_class_str, ',');
+        getline(ss, subject_class_str);
 
         int age = std::stoi(ageStr);
         Student my_student(name);

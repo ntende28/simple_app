@@ -16,7 +16,7 @@ class Student {
   public:
   		// class constructors
 	Student();
-	Student(std::string student_name);
+	Student(std::string& student_name);
 	// Student(&Student student);
 	Student(int age, std::string name, std::map<std::string, std::string> subjects_classes);
 	~Student();
@@ -24,7 +24,7 @@ class Student {
 	// getter helper functions
 	int get_age();
 	std::string get_name();
-	std::string get_subjects_classes();
+	std::map<std::string, std::string> get_subjects_classes();
 
 	// csv helpers
 	std::string map_to_string() const;
@@ -34,7 +34,7 @@ class Student {
 	// setters/object creator functions
 	void set_name(std::string student_name);
 	void set_age(int age);
-	void add_students_classes(std::map<std::string, std::string> rooms);
+	void add_students_classes(std::map<std::string, std::string>& rooms);
 
 	// create, edit, update, delete
 	void add_new_class_subject(std::pair<std::string, std::string> new_subject);

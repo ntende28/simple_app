@@ -2,54 +2,50 @@
 #include <map>
 #include <sstream>
 #include <string>
+#include <algorithm>
 
 class StudentRecords {
 public:
-    std::map<std::string, int> records;
+    std::map<std::string, std::string> records;
 
     // Convert map to string
     std::string mapToString() const {
         std::ostringstream oss;
-        oss << "{";
         for (auto it = records.begin(); it != records.end(); ++it) {
-            oss << it->first << ": " << it->second;
-            if (std::next(it) != records.end()) oss << ", ";
+            oss << "{";
+            oss << it->first << " : " << it->second;
+            oss << "}";
+            if (std::next(it) != records.end()) {
+                oss << ", ";
+                // oss << "}";
+            } 
+            // oss << "}";
         }
-        oss << "}";
         return oss.str();
     }
 
-    // Convert string back to map
-    void stringToMap(const std::string& str) {
-        records.clear();
-        std::string content = str.substr(1, str.size() - 2);  // Remove '{' and '}'
-
-        std::stringstream ss(content);
-        std::string pair;
-
-        while (getline(ss, pair, ',')) {
-            std::stringstream pairStream(pair);
-            std::string key, value;
-
-            getline(pairStream, key, ':');
-            getline(pairStream, value, ':');
-
-            // Trim whitespace
-            key.erase(0, key.find_first_not_of(" \t\n\r"));
-            key.erase(key.find_last_not_of(" \t\n\r") + 1);
-            value.erase(0, value.find_first_not_of(" \t\n\r"));
-            value.erase(value.find_last_not_of(" \t\n\r") + 1);
-
-            std::istringstream keyStream(key);
-            std::istringstream valueStream(value);
-            
-            std::string k;
-            int v;
-            keyStream >> k;
-            valueStream >> v;
-
-            records[k] = v;
+    std::map<std::string, std::string> parseStringToMap(const std::string& input) {
+        std::map<std::string, std::string> result = this->records;
+        std::stringstream ss(input);
+        std::string token;
+    
+        while (std::getline(ss, token, ',')) { // Split by ", "
+            size_t start = token.find('{');
+            size_t end = token.find('}');
+            if (start != std::string::npos) 
+                token = token.substr(start + 1); // Remove leading '{'
+            if (end != std::string::npos) 
+                token = token.substr(0, end);      // Remove trailing '}'
+    
+            size_t delimiter = token.find(" : ");
+            if (delimiter != std::string::npos) {
+                std::string key = token.substr(0, delimiter);
+                std::string value = token.substr(delimiter + 2);
+                records[key] = value;
+            }
         }
+    
+        return records;
     }
 
     // Display records
@@ -63,16 +59,16 @@ public:
 int main() {
     StudentRecords sr;
     sr.records = {
-        {"Alice", 23},
-        {"Bob", 34},
-        {"Charlie", 29}
+        {"Alice", "Alice in wonderland"},
+        {"Bob", "Bob's jungle"},
+        {"Charlie", "Charlie and the chipmunks"}
     };
 
     std::string mapStr = sr.mapToString();
     std::cout << "Map as string: " << mapStr << std::endl;
 
     StudentRecords sr2;
-    sr2.stringToMap(mapStr);
+    sr2.parseStringToMap(mapStr);
     std::cout << "\nReconstructed Map from string:" << std::endl;
     sr2.display();
 

@@ -4,7 +4,7 @@
 // object constructors
 Student::Student() {}
 
-Student::Student(std::string student_name) : name_(student_name){
+Student::Student(std::string& student_name) : name_(student_name){
    age_ = 10;
    subjects_classes = {{"None", "None"}};
 }
@@ -28,53 +28,49 @@ std::string Student::get_name() {
    return this->name_;
 }
 
+std::map<std::string, std::string> Student::get_subjects_classes() {
+   return this->subjects_classes;
+}
+
 std::string Student::to_csv() const {
    return name_ + "," + std::to_string(age_) + "," + map_to_string();
 }
 
 
 std::string Student::map_to_string() const {
-   std::map<std::string, std::string> rms = this->subjects_classes;
+   // std::map<std::string, std::string> rms = this->subjects_classes;
    std::ostringstream oss;
-   for (auto it = rms.begin(); it != rms.end(); ++it) {
-      oss << it->first << " : " << it->second;
-      if (std::next(it) != rms.end())
+   for (auto it = subjects_classes.begin(); it != subjects_classes.end(); ++it) {
+      oss << "{";
+      oss << it->first << ": " << it->second;
+      oss << "}";
+      if (std::next(it) != subjects_classes.end())
          oss << ", ";
    }
    return oss.str();
 }
 
-std::map<std::string, std::string> Student::string_to_map(const std::string& map_string) {
-   // std::string content = str.substr(1, str.size() - 2);  // Remove '{' and '}'
-   subjects_classes.clear();
+std::map<std::string, std::string> Student::string_to_map(const std::string& input) {
+   std::map<std::string, std::string> result;
+   std::stringstream ss(input);
+   std::string token;
 
-   std::stringstream ss(map_string);
-   std::string pair;
+   while (std::getline(ss, token, ',')) { // Split by ","
+       size_t start = token.find('{');
+       size_t end = token.find('}');
+       if (start != std::string::npos) 
+           token = token.substr(start+1); // Remove leading '{'
+       if (end != std::string::npos) 
+           token = token.substr(0, end);    // Remove trailing '}'
 
-   while (getline(ss, pair, ',')) {
-      std::stringstream pairStream(pair);
-      std::string key, value;
-
-      getline(pairStream, key, ':');
-      getline(pairStream, value, ':');
-
-      // Trim whitespace
-      key.erase(0, key.find_first_not_of(" \t\n\r"));
-      key.erase(key.find_last_not_of(" \t\n\r") + 1);
-      value.erase(0, value.find_first_not_of(" \t\n\r"));
-      value.erase(value.find_last_not_of(" \t\n\r") + 1);
-
-      std::istringstream keyStream(key);
-      std::istringstream valueStream(value);
-      
-      std::string k;
-      std::string v;
-      keyStream >> k;
-      valueStream >> v;
-
-      subjects_classes[k] = v;
-   }  
-   return subjects_classes; 
+       size_t delimiter = token.find(": ");
+       if (delimiter != std::string::npos) {
+           std::string key = token.substr(0, delimiter);
+           std::string value = token.substr(delimiter + 2);
+           result[key] = value;
+       }
+   }
+   return result;
 }
 
 
@@ -88,7 +84,7 @@ void Student::set_age(int age){
 }
 
 
-void Student::add_students_classes(std::map<std::string, std::string> rooms) {
+void Student::add_students_classes(std::map<std::string, std::string>& rooms) {
    this->subjects_classes = rooms;
 }
 

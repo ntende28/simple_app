@@ -75,7 +75,8 @@ int main() {
     std::vector<Student> students = {
         {"Alice", 20, 85.5},
         {"Bob", 22, 78.3},
-        {"Charlie", 19, 92.7}
+        {"Charlie", 19, 92.7},
+        {"Brown", 45, 69.5}
     };
 
     writeToCSV("students.csv", students);
@@ -83,9 +84,9 @@ int main() {
 
     auto current_students = readFromCSV("students.csv");
     // adding the headers
-    std::cout << "Name \t| Age \t| Grade "<< std::endl;
-    for(auto i: current_students)
-        std::cout << i.name << " \t| " << i.age << " \t| " << i.grade << "\n";
-
+    std::cout << "Name \t\t| Age \t| Grade |"<< std::endl;
+    for(auto i: current_students){
+        std::cout << i.name << "\t\t| " << i.age << " \t| " << i.grade << "\t|\n";
+    }
     return 0;
 }

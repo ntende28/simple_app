@@ -1,0 +1,6 @@
+Name,Age,Subjects and Rooms
+Alice,21,{Computer Programming 101: Computer Lab}, {Electronics: Electronics lab}, {Literature: Literature Room}, {Physics: Physics Lab}
+Bob,22,{Computer Programming 101: Computer Lab}, {Electronics: Electronics lab}, {Literature: Literature Room}, {Physics: Physics Lab}
+Charlie,19,{Computer Programming 101: Computer lab}, {Fine Art: Art room}, {History: History room}
+Brown,45,{Computer Programming 101: Computer lab}, {Fine Art: Art room}, {History: History room}
+Black eye pies,35,{Computer Programming 101: Computer lab}, {Fine Art: Art room}, {History: History room}
