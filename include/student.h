@@ -28,7 +28,8 @@ class Student {
 
 	// csv helpers
 	std::string map_to_string() const;
-	std::map<std::string, std::string> string_to_map(const std::string& str);
+	std::string brace_removal(std::string& s);
+	std::map<std::string, std::string> string_to_map(std::string& str);
 	std::string to_csv() const;
 
 	// setters/object creator functions

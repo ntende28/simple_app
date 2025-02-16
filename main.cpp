@@ -3,10 +3,26 @@
 #include "include/student.h"
 #include "include/datastore.h"
 #include <limits>
+#include <iomanip>
 
-static std::vector<Student> my_students;
+std::vector<Student> my_students;
 
 Datastore& ds = Datastore::getInstance();
+
+std::map<std::string, std::string> science_subject_rooms = {
+	{"Physics", "Physics Lab"}, 
+	{"Electronics", "Electronics lab"},
+	{"Computer Programming 101", "Computer Lab"},
+	{"Literature", "Literature Room"}
+};
+
+std::map<std::string, std::string> arts_subject_rooms = {
+		{"History", "History room"},
+		{"Fine Art", "Art room"},
+		{"Geography", "Geog room"},
+		{"Computer Programming 101", "Computer lab"}
+};
+
 
 void print_menu(){
 	std::cout << "0. Display available options \n";
@@ -20,48 +36,88 @@ void print_menu(){
 
 Student _add_students() {
 	int student_age;
+	char srm;
 	std::string student_name;
-	std::string subjects_rooms;
+	std::map<std::string, std::string> subject_rooms;
 		
 	std::cout << "Enter the student name : ";
 	std::cin >> student_name;
 	std::cout << "Enter the student's age : ";
 	std::cin >> student_age;
-	std::cout << "Enter choice of subjects and their rooms (e.g. physics : physics lab, art : artroom) : \n";
-	std::cin >> subjects_rooms;
+	std::cout << "Is student an arts or science student (Enter A for arts or S for sciences): ";
+	std::cin >> srm;
+	if (srm == 'A' || srm == 'a') {
+		subject_rooms = arts_subject_rooms;
+	} else if (srm == 's' || srm == 'S') {
+		subject_rooms = science_subject_rooms;
+	} else {
+		subject_rooms = {{"None", "None"}};
+	}
 
-	Student my_student(student_name);
-	my_student.set_age(student_age);
-	std::map<std::string, std::string> rooms = my_student.string_to_map(subjects_rooms);
-	my_student.add_students_classes(rooms);
+	Student my_student(student_age, student_name, subject_rooms);
 	return my_student;
 }
 
 
 void add_new_students() {
-    char flag = 'y';
-
-    while (flag == 'y' || flag == 'Y') {
-		Student student = _add_students();
-		my_students.push_back(student);
-		ds.add_students("datastore.csv", my_students);
-
-        std::cout << "Do you want to enter another student (y/n)? ";
-        std::cin >> flag;
-        std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n'); // Flush buffer
-    }
-
+	Student student = _add_students();
+	my_students.push_back(student);
+	ds.add_students("datastore.csv", my_students);
     std::cout << "Returning to main menu...\n";
 }
 
-void display_students(std::vector<Student>& students) {
-	
-	std::cout << "Name \t| Age \t| Subjects & Classes \t|\n";
-	for (auto &it : students) {
-		std::cout << it.get_name() << " \t|" << it.get_age() << " \t|" << it.map_to_string() << " \t|\n";
-	}
-	std::cout << "\n";
+
+void printTable(std::vector<Student>& students) {
+    if (students.empty()) return;
+
+    // Determine column widths
+    size_t nameWidth = 4;  // Minimum width for "Name"
+    size_t ageWidth = 3;   // Minimum width for "Age"
+    size_t subjectWidth = 15; // Minimum width for "Subjects and Rooms"
+
+    
+    for (auto& student : students) {
+        nameWidth = std::max(nameWidth, student.get_name().size());
+        for (auto& entry : student.get_subjects_classes()) {
+            size_t combinedSize = entry.first.size() + entry.second.size() + 2; // "Subject: Room"
+            subjectWidth = std::max(subjectWidth, combinedSize);
+        }
+    }
+    // Print header
+    std::cout << "+" << std::string(nameWidth + 2, '-') << "+"
+              << std::string(ageWidth + 2, '-') << "+"
+              << std::string(subjectWidth + 2, '-') << "+\n";
+
+    std::cout << "| " << std::setw(nameWidth) << std::left << "Name" << " | "
+              << std::setw(ageWidth) << "Age" << " | "
+              << std::setw(subjectWidth) << "Subjects and Rooms" << " |\n";
+
+    std::cout << "+" << std::string(nameWidth + 2, '-') << "+"
+              << std::string(ageWidth + 2, '-') << "+"
+              << std::string(subjectWidth + 2, '-') << "+\n";
+
+    // Print each row
+    for (auto& student : students) {
+        bool firstRow = true;
+        for (auto& entry : student.get_subjects_classes()) {
+            if (firstRow) {
+                std::cout << "| " << std::setw(nameWidth) << std::left << student.get_name() << " | "
+                          << std::setw(ageWidth) << student.get_age() << " | "
+                          << std::setw(subjectWidth) << (entry.first + ": " + entry.second) << " |\n";
+                firstRow = false;
+            } else {
+                std::cout << "| " << std::setw(nameWidth) << std::left << "" << " | "
+                          << std::setw(ageWidth) << "" << " | "
+                          << std::setw(subjectWidth) << (entry.first + ": " + entry.second) << " |\n";
+            }
+        }
+
+        std::cout << "+" << std::string(nameWidth + 2, '-') << "+"
+                  << std::string(ageWidth + 2, '-') << "+"
+                  << std::string(subjectWidth + 2, '-') << "+\n";
+    }
 }
+
 
 int main() {
 
@@ -76,6 +132,7 @@ int main() {
 	int choice = 0;
 	bool is_active = true;
 	std::vector<Student> current_students =  ds.find_all("datastore.csv");
+
 	print_menu();
 	
 	while(is_active) {	
@@ -95,7 +152,7 @@ int main() {
 		case 2:
 			/* Return all existing students in the datastore in a table format  */
 			std::cout << "Displaying all existing students...\n";
-			display_students(current_students);
+			printTable(current_students);
 			break;
 
 		case 3:

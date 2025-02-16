@@ -32,14 +32,15 @@ std::map<std::string, std::string> Student::get_subjects_classes() {
    return this->subjects_classes;
 }
 
+// csv helper functions
 std::string Student::to_csv() const {
    return name_ + "," + std::to_string(age_) + "," + map_to_string();
 }
 
-
 std::string Student::map_to_string() const {
    // std::map<std::string, std::string> rms = this->subjects_classes;
    std::ostringstream oss;
+   oss << "{";
    for (auto it = subjects_classes.begin(); it != subjects_classes.end(); ++it) {
       oss << "{";
       oss << it->first << ": " << it->second;
@@ -47,28 +48,34 @@ std::string Student::map_to_string() const {
       if (std::next(it) != subjects_classes.end())
          oss << ", ";
    }
+   oss << "}";
    return oss.str();
 }
 
-std::map<std::string, std::string> Student::string_to_map(const std::string& input) {
+std::string Student::brace_removal(std::string& s) {
+   std::string ns;
+   for (int i = 0; i < s.length(); i++)
+   {
+       if (s.at(i) != '{' && s.at(i) != '}') {
+           ns+=s.at(i);
+       }
+   }
+   return ns;
+}
+
+std::map<std::string, std::string> Student::string_to_map(std::string& input) {
+   std::string my_new_string = brace_removal(input);
    std::map<std::string, std::string> result;
-   std::stringstream ss(input);
+   std::istringstream stream(my_new_string);
    std::string token;
 
-   while (std::getline(ss, token, ',')) { // Split by ","
-       size_t start = token.find('{');
-       size_t end = token.find('}');
-       if (start != std::string::npos) 
-           token = token.substr(start+1); // Remove leading '{'
-       if (end != std::string::npos) 
-           token = token.substr(0, end);    // Remove trailing '}'
-
-       size_t delimiter = token.find(": ");
-       if (delimiter != std::string::npos) {
-           std::string key = token.substr(0, delimiter);
-           std::string value = token.substr(delimiter + 2);
-           result[key] = value;
-       }
+   while (std::getline(stream, token, ',')) { // Split by ","
+      size_t delimiter = token.find(": ");
+      if (delimiter != std::string::npos) {
+         std::string key = token.substr(0, delimiter);
+         std::string value = token.substr(delimiter + 2);
+         result[key] = value;
+      }
    }
    return result;
 }
@@ -82,7 +89,6 @@ void Student::set_name(std::string student_name) {
 void Student::set_age(int age){
    this->age_ = age;
 }
-
 
 void Student::add_students_classes(std::map<std::string, std::string>& rooms) {
    this->subjects_classes = rooms;

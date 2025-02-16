@@ -1,9 +1,62 @@
 #include "../include/datastore.h"
 #include "../include/student.h"
+#include <iomanip>
 // #include <vector>
 
 // to handle all file related tasks
 Datastore& ds = Datastore::getInstance();
+
+
+void printTable(std::vector<Student>& students) {
+    if (students.empty()) return;
+
+    // Determine column widths
+    size_t nameWidth = 4;  // Minimum width for "Name"
+    size_t ageWidth = 3;   // Minimum width for "Age"
+    size_t subjectWidth = 15; // Minimum width for "Subjects and Rooms"
+
+    
+    for (auto& student : students) {
+        nameWidth = std::max(nameWidth, student.get_name().size());
+        for (auto& entry : student.get_subjects_classes()) {
+            size_t combinedSize = entry.first.size() + entry.second.size() + 2; // "Subject: Room"
+            subjectWidth = std::max(subjectWidth, combinedSize);
+        }
+    }
+    // Print header
+    std::cout << "+" << std::string(nameWidth + 2, '-') << "+"
+              << std::string(ageWidth + 2, '-') << "+"
+              << std::string(subjectWidth + 2, '-') << "+\n";
+
+    std::cout << "| " << std::setw(nameWidth) << std::left << "Name" << " | "
+              << std::setw(ageWidth) << "Age" << " | "
+              << std::setw(subjectWidth) << "Subjects and Rooms" << " |\n";
+
+    std::cout << "+" << std::string(nameWidth + 2, '-') << "+"
+              << std::string(ageWidth + 2, '-') << "+"
+              << std::string(subjectWidth + 2, '-') << "+\n";
+
+    // Print each row
+    for (auto& student : students) {
+        bool firstRow = true;
+        for (auto& entry : student.get_subjects_classes()) {
+            if (firstRow) {
+                std::cout << "| " << std::setw(nameWidth) << std::left << student.get_name() << " | "
+                          << std::setw(ageWidth) << student.get_age() << " | "
+                          << std::setw(subjectWidth) << (entry.first + ": " + entry.second) << " |\n";
+                firstRow = false;
+            } else {
+                std::cout << "| " << std::setw(nameWidth) << std::left << "" << " | "
+                          << std::setw(ageWidth) << "" << " | "
+                          << std::setw(subjectWidth) << (entry.first + ": " + entry.second) << " |\n";
+            }
+        }
+
+        std::cout << "+" << std::string(nameWidth + 2, '-') << "+"
+                  << std::string(ageWidth + 2, '-') << "+"
+                  << std::string(subjectWidth + 2, '-') << "+\n";
+    }
+}
 
 int main () {
 
@@ -33,17 +86,7 @@ int main () {
     std::cout << "CSV file written successfully.\n";
 
     auto existing_students = ds.find_all("datastore.csv");
-    for (auto &i : existing_students)
-    {
-        std::cout << i.map_to_string() << "\n";
-    }
-    
-    // std::cout << "Name \t\t\t| Age \t| Subjects and classrooms \t\t|"<< std::endl;
-    // for (auto &it : existing_students)
-    // {
-    //     std::cout << it.get_name() << "\t\t\t| " << it.get_age() << " \t| " << it.map_to_string() << "\t|\n";
+    printTable(existing_students);
 
-    // }
-    
     return 0;
 }

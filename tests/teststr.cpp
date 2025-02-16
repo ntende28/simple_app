@@ -17,38 +17,6 @@ string removal(string s) {
     return ns;
 }
 
-string _removal(string& str, char ct) {
-    string ns;
-    for (int i = 0; i < str.length(); i++)
-    {
-        if (str.at(i) != ct)
-            ns+=str.at(i);
-    }
-    return ns;
-}
-
-
-map<string, string> create_pair_string(string& str) {
-    string element;
-    string key;
-    string value; 
-    int index, idx;
-    map<string, string> objects;
-
-    for (int i = 0; i < str.length(); i++)
-    {
-        index = str.find(',');
-        element = str.substr(0, index);
-        idx = element.find(':');
-        key = element.substr(0, idx);
-        value = element.substr(idx+1);  
-        objects[key] = value;     
-    }
-    return objects;
-}
-
-// char* sp
-
 int main() {
     string my_str = "{Computer Programming 101: Computer Lab}, {Electronics: Electronics lab}, {Literature: Literature Room}, {Physics: Physics Lab}";
     cout << "Original string : " << my_str << endl;
@@ -56,22 +24,23 @@ int main() {
     string my_new_string = removal(my_str);
     istringstream stream(my_new_string);
     string token;
+    map<string, string> result;
 
-    while (std::getline(stream, token, ',')) {
-        std::cout << token << std::endl;
+    while (getline(stream, token, ',')) {
+        // cout << token << endl;
+        size_t delimiter = token.find(": ");
+        if (delimiter != std::string::npos) {
+            std::string key = token.substr(0, delimiter);
+            std::string value = token.substr(delimiter + 2);
+            result[key] = value;
+        }
     }
-    // char map_str[my_new_string.length()];
-    // strcpy(map_str, my_new_string.c_str());
-
-    // const char* delimiter = ",";
-    // char* token = strtok(map_str, delimiter); // Get first token
-    // while (token != nullptr) {
-    //     std::cout << token << std::endl;
-    //     token = strtok(nullptr, delimiter); // Get next token
-    // }
-
-    // const char* delimiter2 = ":";
-    // char* key = strtok()
+    
+    for (auto &it : result)
+    {
+        cout << it.first << " -> " << it.second << endl;         
+    }
+    
 
     return 0;
 }
