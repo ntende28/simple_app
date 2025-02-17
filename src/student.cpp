@@ -11,7 +11,9 @@ Student::Student(std::string& student_name) : name_(student_name){
 
 
 Student::Student(int age, std::string name, std::map<std::string, std::string> students_classes) 
-   : age_(age), name_(name), subjects_classes(students_classes) {}
+   : age_(age), name_(name), subjects_classes(students_classes) {
+      id_ += 1;
+   }
 
 
 Student::Student(int id, int age, std::string name, std::map<std::string, std::string> students_classes) 
@@ -37,6 +39,10 @@ std::string Student::get_name() {
 
 std::map<std::string, std::string> Student::get_subjects_classes() {
    return this->subjects_classes;
+}
+
+bool Student::operator<(const Student& other) const {
+   return id_ < other.id_;  // Compare based on `id`
 }
 
 // csv helper functions

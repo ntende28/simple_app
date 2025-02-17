@@ -66,7 +66,6 @@ std::vector<Student> Datastore::find_all(const std::string& filename) {
     return students;
 }
 
-
 // void Datastore::update_student(Student& obj) {
 
 // }
@@ -78,4 +77,18 @@ std::vector<Student> Datastore::find_all(const std::string& filename) {
 // Student Datastore::find_student(std::string student_name) {
 
 // }
+
+int Datastore::countLines(const std::string& filename) {
+    std::ifstream file(filename);
+    int lines = 0;
+    std::string temp;
+    
+    while (getline(file, temp)) {
+        lines++;
+    }
+
+    return lines;
+}
+
+
 

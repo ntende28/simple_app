@@ -13,7 +13,6 @@ int main() {
 	*/
 	int choice = 0;
 	bool is_active = true;
-	std::vector<Student> current_students =  ds.find_all("../db/datastore.csv");
 
 	print_menu();
 	
@@ -28,13 +27,14 @@ int main() {
 		
 		case 1:
 			std::cout << "Adding new students...\n";
+			// addthr.join();
 			add_new_students();
 			break;
 
 		case 2:
 			/* Return all existing students in the datastore in a table format  */
 			std::cout << "Displaying all existing students...\n";
-			printTable(current_students);
+			printTable(my_students);
 			break;
 
 		case 3:
@@ -58,6 +58,8 @@ int main() {
 		}
 		print_menu();  // Display the menu again only after processing a choice
 	}
-
+	
+	std::thread watcher(watchCSV, "../db/datastore.csv");  
+    watcher.join();
 	return 0;
 }

@@ -28,6 +28,7 @@ class Student {
 	int get_id();
 	std::string get_name();
 	std::map<std::string, std::string> get_subjects_classes();
+	bool operator<(const Student& other) const;
 
 	// csv helpers
 	std::string map_to_string() const;

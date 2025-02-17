@@ -5,11 +5,13 @@
 #include "student.h"
 #include "datastore.h"
 #include <iomanip>
-// #include <thread>
+#include <set>
+#include <thread>
+#include <chrono>
 
-std::vector<Student> my_students;
 
 Datastore& ds = Datastore::getInstance();
+std::vector<Student> my_students;
 
 std::map<std::string, std::string> science_subject_rooms = {
 	{"Physics", "Physics Lab"}, 
@@ -63,6 +65,7 @@ Student _add_students() {
 
 void add_new_students() {
 	Student student = _add_students();
+	std::vector<Student> my_students;
 	my_students.push_back(student);
 	ds.add_students("../db/datastore.csv", my_students);
     std::cout << "Returning to main menu...\n";
@@ -124,5 +127,30 @@ void printTable(std::vector<Student>& students) {
 				  << std::string(nameWidth + 2, '-') << "+"
                   << std::string(ageWidth + 2, '-') << "+"
                   << std::string(subjectWidth + 2, '-') << "+\n";
+    }
+}
+
+void watchCSV(const std::string& filename) {
+    int lastLineCount = ds.countLines(filename);
+
+    while (true) {
+        std::this_thread::sleep_for(std::chrono::seconds(2));  // Check every 2 seconds
+
+        int currentLineCount = ds.countLines(filename);
+        if (currentLineCount > lastLineCount) {
+            std::ifstream file(filename);
+            std::string line;
+            int lineNumber = 0;
+
+            while (getline(file, line)) {
+                if (lineNumber >= lastLineCount) {  // Print only new lines
+                    // cout << "New Entry: " << line << endl;
+                    my_students = ds.find_all("../db/datastore.csv");
+                }
+                lineNumber++;
+            }
+
+            lastLineCount = currentLineCount;
+        }
     }
 }
