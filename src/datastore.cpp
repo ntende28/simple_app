@@ -5,7 +5,7 @@ file. This is to contain the input obtained from the user in the commandline.*/
 
 
 // adding students to csv file
-void Datastore::add_students(const std::string &filename, const std::vector<Student> &students) {
+void Datastore::add_students(const std::string &filename, std::vector<Student> &students) {
     std::ofstream file(filename);
     
     if (!file.is_open()) {
@@ -14,13 +14,14 @@ void Datastore::add_students(const std::string &filename, const std::vector<Stud
     }
 
     // Write header
-    file << "Name,Age,Subjects and Rooms\n";
+    file << "Id,Name,Age,Subjects and Rooms\n";
 
-    // Write each student as a CSV row
-    for (const auto& student : students) {
-        file << student.to_csv() << "\n";
+    // Write each student as a CSV row  
+    for (int i = 0; i < students.size(); i++)
+    {
+       students[i].set_id(i);
+       file << students[i].to_csv() << "\n";
     }
-
     file.close();
 }
 
@@ -44,18 +45,21 @@ std::vector<Student> Datastore::find_all(const std::string& filename) {
         }
 
         std::stringstream ss(line);
-        std::string name, ageStr, subject_class_str;
+        std::string id, name, ageStr, subject_class_str;
 
+        getline(ss, id, ',');
         getline(ss, name, ',');
         getline(ss, ageStr, ',');
         getline(ss, subject_class_str);
 
+        int student_id = std::stoi(id);
         int age = std::stoi(ageStr);
         Student my_student(name);
+        my_student.set_id(student_id);
         my_student.set_age(age);
         std::map<std::string, std::string> subjects_classes = my_student.string_to_map(subject_class_str);
 
-        students.emplace_back(age, name, subjects_classes);
+        students.emplace_back(student_id, age, name, subjects_classes);
     }
 
     file.close();

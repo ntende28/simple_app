@@ -14,6 +14,10 @@ Student::Student(int age, std::string name, std::map<std::string, std::string> s
    : age_(age), name_(name), subjects_classes(students_classes) {}
 
 
+Student::Student(int id, int age, std::string name, std::map<std::string, std::string> students_classes) 
+   : id_(id), age_(age), name_(name), subjects_classes(students_classes) {}
+
+
 Student::~Student(){}
 
 
@@ -23,6 +27,9 @@ int Student::get_age() {
    return this->age_;
 }
 
+int Student::get_id() {
+   return this->id_;
+}
 
 std::string Student::get_name() {
    return this->name_;
@@ -34,7 +41,7 @@ std::map<std::string, std::string> Student::get_subjects_classes() {
 
 // csv helper functions
 std::string Student::to_csv() const {
-   return name_ + "," + std::to_string(age_) + "," + map_to_string();
+   return std::to_string(id_) + "," + name_ + "," + std::to_string(age_) + "," + map_to_string();
 }
 
 std::string Student::map_to_string() const {
@@ -82,6 +89,10 @@ std::map<std::string, std::string> Student::string_to_map(std::string& input) {
 
 
 // setter functions
+void Student::set_id(int id) {
+   this->id_ = id;
+}
+
 void Student::set_name(std::string student_name) {
    this->name_ = student_name;
 }

@@ -62,7 +62,7 @@ Student _add_students() {
 void add_new_students() {
 	Student student = _add_students();
 	my_students.push_back(student);
-	ds.add_students("datastore.csv", my_students);
+	ds.add_students("../db/datastore.csv", my_students);
     std::cout << "Returning to main menu...\n";
 }
 
@@ -71,6 +71,7 @@ void printTable(std::vector<Student>& students) {
     if (students.empty()) return;
 
     // Determine column widths
+	size_t id_field = 3;
     size_t nameWidth = 4;  // Minimum width for "Name"
     size_t ageWidth = 3;   // Minimum width for "Age"
     size_t subjectWidth = 15; // Minimum width for "Subjects and Rooms"
@@ -84,15 +85,18 @@ void printTable(std::vector<Student>& students) {
         }
     }
     // Print header
-    std::cout << "+" << std::string(nameWidth + 2, '-') << "+"
+    std::cout << "+" << std::string(id_field + 2, '-') << "+"
+			  << "+" << std::string(nameWidth + 2, '-') << "+"
               << std::string(ageWidth + 2, '-') << "+"
               << std::string(subjectWidth + 2, '-') << "+\n";
 
-    std::cout << "| " << std::setw(nameWidth) << std::left << "Name" << " | "
+    std::cout << "| " << std::setw(id_field) << std::left << "Id" << " | "
+			  << "| " << std::setw(nameWidth) << std::left << "Name" << " | "
               << std::setw(ageWidth) << "Age" << " | "
               << std::setw(subjectWidth) << "Subjects and Rooms" << " |\n";
 
-    std::cout << "+" << std::string(nameWidth + 2, '-') << "+"
+    std::cout << "+" << std::string(id_field + 2, '-') << "+"
+			  << "+" << std::string(nameWidth + 2, '-') << "+"
               << std::string(ageWidth + 2, '-') << "+"
               << std::string(subjectWidth + 2, '-') << "+\n";
 
@@ -101,18 +105,21 @@ void printTable(std::vector<Student>& students) {
         bool firstRow = true;
         for (auto& entry : student.get_subjects_classes()) {
             if (firstRow) {
-                std::cout << "| " << std::setw(nameWidth) << std::left << student.get_name() << " | "
+                std::cout << "| " << std::setw(id_field) << std::left << student.get_id() << " | "
+						  << "| " << std::setw(nameWidth) << std::left << student.get_name() << " | "
                           << std::setw(ageWidth) << student.get_age() << " | "
                           << std::setw(subjectWidth) << (entry.first + ": " + entry.second) << " |\n";
                 firstRow = false;
             } else {
-                std::cout << "| " << std::setw(nameWidth) << std::left << "" << " | "
+                std::cout << "| " << std::setw(id_field) << std::left << "" << " | "
+						  << "| " << std::setw(nameWidth) << std::left << "" << " | "
                           << std::setw(ageWidth) << "" << " | "
                           << std::setw(subjectWidth) << (entry.first + ": " + entry.second) << " |\n";
             }
         }
 
-        std::cout << "+" << std::string(nameWidth + 2, '-') << "+"
+        std::cout << "+" << std::string(id_field + 2, '-') << "+"
+				  << "+" << std::string(nameWidth + 2, '-') << "+"
                   << std::string(ageWidth + 2, '-') << "+"
                   << std::string(subjectWidth + 2, '-') << "+\n";
     }
@@ -131,7 +138,7 @@ int main() {
 	*/
 	int choice = 0;
 	bool is_active = true;
-	std::vector<Student> current_students =  ds.find_all("datastore.csv");
+	std::vector<Student> current_students =  ds.find_all("../db/datastore.csv");
 
 	print_menu();
 	
