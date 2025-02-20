@@ -13,6 +13,14 @@ int main() {
 	*/
 	int choice = 0;
 	bool is_active = true;
+	std::string student, subject;
+	int val = ds->init();
+	std::vector<Student> my_students;
+	std::vector<Subject> subjects;
+
+	if (val == -1) {
+        std::cout << "Error occurred in initializing the database!!\n";
+    }
 
 	print_menu();
 	
@@ -27,27 +35,32 @@ int main() {
 		
 		case 1:
 			std::cout << "Adding new students...\n";
-			// addthr.join();
-			add_new_students();
+			add_new_student();
 			break;
-
+		
 		case 2:
-			/* Return all existing students in the datastore in a table format  */
-			std::cout << "Displaying all existing students...\n";
-			printTable(my_students);
+			std::cout << "Adding new subjects...\n";
+			add_new_subject();
 			break;
 
 		case 3:
+			/* Return all existing students in the datastore in a table format  */
+			std::cout << "Displaying all existing students...\n";
+			ds->fetch_students(my_students);
+			print_students_table(my_students);
+			break;
+
+		case 4:
 			/* Update info/attributes for an existing student */
 			std::cout << "Updating student information...\n";
 			break;
 
-		case 4:
+		case 5:
 			/* Delete a student from the datastore */
 			std::cout << "Deleting a student...\n";
 			break;
 
-		case 5:
+		case 6:
 			/* Quit program */
 			std::cout << "Exiting program...\n";
 			return 0;
@@ -59,7 +72,5 @@ int main() {
 		print_menu();  // Display the menu again only after processing a choice
 	}
 	
-	std::thread watcher(watchCSV, "../db/datastore.csv");  
-    watcher.join();
 	return 0;
 }

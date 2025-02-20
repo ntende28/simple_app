@@ -9,7 +9,7 @@ include_directories(${CMAKE_SOURCE_DIR}/include)
 
 
 #adding an executable
-add_executable(${PROJECT_NAME} main.cpp src/student.cpp src/datastore.cpp)
+add_executable(${PROJECT_NAME} main.cpp src/student.cpp src/datastore.cpp src/subjects.cpp)
 
-find_package(Threads REQUIRED)
-target_link_libraries(${PROJECT_NAME} PRIVATE Threads::Threads)
+find_package(SQLite3 REQUIRED)
+target_link_libraries(${PROJECT_NAME} PRIVATE sqlite3)
