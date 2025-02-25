@@ -3,10 +3,10 @@
 /*Implementing a proxy storage system to create a persistent storage with a csv
 file. This is to contain the input obtained from the user in the commandline.*/
 // initialize the pointer
-Datastore* Datastore::instance = nullptr;
+datastore::Datastore* datastore::Datastore::instance = nullptr;
 
 // creating all needed tables
-int Datastore::init() {
+int datastore::Datastore::init() {
     if (sqlite3_open("../db/students.db", &db)) {
 		std::cerr << "Cannot open database!" << std::endl;
 		return -1;
@@ -42,7 +42,7 @@ int Datastore::init() {
 }
 
 // add a new student to the db
-void Datastore::add_student(Student& student) {
+void datastore::Datastore::add_student(Student& student) {
     const char* sql = "INSERT INTO Students (Student_name, Student_age) VALUES (?, ?);";
 
     sqlite3_stmt* stmt;
@@ -60,6 +60,7 @@ void Datastore::add_student(Student& student) {
         std::cerr << "Error inserting student: " << sqlite3_errmsg(db) << std::endl;
     } else {
         std::cout << "Student inserted successfully!" << std::endl;
+        eventHandler.trigger(++recordCount); // Notify listeners with new record count
     }
 
     // Finalize statement
@@ -77,7 +78,7 @@ int students_callback(void* data, int argc, char** argv, char** colNames) {
     return 0;
 }
 
-void Datastore::fetch_students(std::vector<Student>& students) {
+void datastore::Datastore::fetch_students(std::vector<Student>& students) {
     std::string sql = "SELECT * FROM Students;";
     char* errMsg;
 
@@ -89,7 +90,7 @@ void Datastore::fetch_students(std::vector<Student>& students) {
 }
 
 
-void Datastore::add_subject(Subject& subject) {
+void datastore::Datastore::add_subject(Subject& subject) {
     const char* sql = "INSERT INTO Subjects (Subject_name, Location) VALUES (?, ?);";
 
     sqlite3_stmt* stmt;
@@ -124,7 +125,7 @@ int subjects_callback(void* data, int argc, char** argv, char** colNames) {
     return 0;
 }
 
-void Datastore::fetch_subjects(std::vector<Subject>& subjects) {
+void datastore::Datastore::fetch_subjects(std::vector<Subject>& subjects) {
     std::string sql = "SELECT * FROM Subjects;";
     char* errMsg;
 
@@ -133,5 +134,9 @@ void Datastore::fetch_subjects(std::vector<Subject>& subjects) {
         std::cerr << "Error fetching subjects: " << errMsg << std::endl;
         sqlite3_free(errMsg);
     }
+}
+
+void datastore::Datastore::onDatabaseInsert(int newCount) {
+    std::cout << "Database updated! Total records: " << newCount << std::endl;
 }
 

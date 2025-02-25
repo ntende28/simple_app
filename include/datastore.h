@@ -6,41 +6,67 @@ with a csv file. This is to contain the input obtained from the user in the comm
 #include "subjects.h"
 #include <fstream>
 #include <sqlite3.h>
+#include <functional>
 
 // #include <memory>
+using EventHandler = std::function<void(int)>; // Callback function accepting an int
 
-class Datastore {
-    private:
-        Datastore() {}
-        sqlite3* db;
+namespace datastore {
 
-        // Delete copy constructor and assignment operator to prevent copying
-        Datastore(const Datastore&) = delete;
-        Datastore& operator=(const Datastore&) = delete;
+    class Datastore {
+        private:
+            Datastore() {}
+            sqlite3* db;
 
-        static Datastore* instance;
-    public:
-        // Static method to provide access to the instance
-        static Datastore* getInstance() {
-            if (instance == nullptr) {
-                instance = new Datastore();
+            // Delete copy constructor and assignment operator to prevent copying
+            Datastore(const Datastore&) = delete;
+            Datastore& operator=(const Datastore&) = delete;
+
+            static Datastore* instance;
+            int recordCount = 0; // Variable to track number of records
+        public:
+            // Static method to provide access to the instance
+            static Datastore* getInstance() {
+                if (instance == nullptr) {
+                    instance = new Datastore();
+                }
+                return instance;
             }
-            return instance;
-        }
 
-        int init();
+            int init();
+            DatabaseEvent eventHandler; // Event handler instance
 
-        // CRUD operations (students): create, read, update, delete
-        void add_student(Student& student);
-        // bool find_student(std::string student_name);
-        void fetch_students(std::vector<Student>& students);
-        // void update_student(std::string& student_name);
-        // void delete_student(std::string& student_name);
+            // CRUD operations (students): create, read, update, delete
+            void add_student(Student& student);
+            void onDatabaseInsert(int newCount);
+            // bool find_student(std::string student_name);
+            void fetch_students(std::vector<Student>& students);
+            // void update_student(std::string& student_name);
+            // void delete_student(std::string& student_name);
 
-        // CRUD operations (subjects)
-        void add_subject(Subject& subject);
-        void fetch_subjects(std::vector<Subject>& subjects);
-};
+            // CRUD operations (subjects)
+            void add_subject(Subject& subject);
+            void fetch_subjects(std::vector<Subject>& subjects);
+
+    };
+
+    class DatabaseEvent {
+        private:
+            std::vector<EventHandler> listeners;
+
+        public:
+            void addListener(EventHandler handler) {
+                listeners.push_back(handler);
+            }
+            
+            void trigger(int newValue) {
+                for (const auto& handler : listeners) {
+                    handler(newValue);
+                }
+            }
+    };
+}
+
 
 
 
