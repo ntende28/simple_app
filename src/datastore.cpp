@@ -3,10 +3,10 @@
 /*Implementing a proxy storage system to create a persistent storage with a csv
 file. This is to contain the input obtained from the user in the commandline.*/
 // initialize the pointer
-datastore::Datastore* datastore::Datastore::instance = nullptr;
+Datastore* Datastore::instance = nullptr;
 
 // creating all needed tables
-int datastore::Datastore::init() {
+int Datastore::init() {
     if (sqlite3_open("../db/students.db", &db)) {
 		std::cerr << "Cannot open database!" << std::endl;
 		return -1;
@@ -42,7 +42,7 @@ int datastore::Datastore::init() {
 }
 
 // add a new student to the db
-void datastore::Datastore::add_student(Student& student) {
+void Datastore::add_student(Student& student) {
     const char* sql = "INSERT INTO Students (Student_name, Student_age) VALUES (?, ?);";
 
     sqlite3_stmt* stmt;
@@ -78,7 +78,7 @@ int students_callback(void* data, int argc, char** argv, char** colNames) {
     return 0;
 }
 
-void datastore::Datastore::fetch_students(std::vector<Student>& students) {
+void Datastore::fetch_students(std::vector<Student>& students) {
     std::string sql = "SELECT * FROM Students;";
     char* errMsg;
 
@@ -90,7 +90,7 @@ void datastore::Datastore::fetch_students(std::vector<Student>& students) {
 }
 
 
-void datastore::Datastore::add_subject(Subject& subject) {
+void Datastore::add_subject(Subject& subject) {
     const char* sql = "INSERT INTO Subjects (Subject_name, Location) VALUES (?, ?);";
 
     sqlite3_stmt* stmt;
@@ -125,7 +125,7 @@ int subjects_callback(void* data, int argc, char** argv, char** colNames) {
     return 0;
 }
 
-void datastore::Datastore::fetch_subjects(std::vector<Subject>& subjects) {
+void Datastore::fetch_subjects(std::vector<Subject>& subjects) {
     std::string sql = "SELECT * FROM Subjects;";
     char* errMsg;
 
@@ -136,7 +136,17 @@ void datastore::Datastore::fetch_subjects(std::vector<Subject>& subjects) {
     }
 }
 
-void datastore::Datastore::onDatabaseInsert(int newCount) {
+void Datastore::onDatabaseInsert(int newCount) {
     std::cout << "Database updated! Total records: " << newCount << std::endl;
+}
+
+void DatabaseEvent::addListener(EventHandler handler) {
+    listeners.push_back(handler);
+}
+
+void DatabaseEvent::trigger(int newValue) {
+    for (const auto& handler : listeners) {
+        handler(newValue);
+    }
 }
 

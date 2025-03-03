@@ -47,7 +47,16 @@ void add_new_subject() {
     std::cout << "Returning to main menu...\n";
 }
 
+void print_all_students(std::vector<Student>& students) {
+    if (students.empty()) return;
 
+    std::cout << "ID \t Name \t Age \t" << std::endl;
+    for (auto& it : students) {
+        std::cout << it.get_id() <<"\t" 
+                  << it.get_name() << "\t"
+                  << it.get_age() << std::endl;
+    }
+}
 
 void print_students_table(std::vector<Student>& students) {
     if (students.empty()) return;
